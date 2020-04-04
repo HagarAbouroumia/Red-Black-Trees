@@ -1,26 +1,63 @@
 #include <stdio.h>
 #include "struct.h"
+#include "file.h"
+#include "functions.h"
 
 int main() {
 
     nill = (struct node *) malloc(sizeof(struct node));
     root = nill;
-    root = insert(root, 10);
-    root = insert(root, 18);
-    root = insert(root, 7);
-    root = insert(root, 15);
-    root = insert(root, 16);
-    root = insert(root, 30);
-    root = insert(root, 25);
-    root = insert(root, 40);
-    root = insert(root, 60);
-    root = insert(root, 2);
-    root = insert(root, 1);
-    root = insert(root, 70);
-printf("%d\n\n",root->key);
+    char **str = read_from_file();
+    for (int i = 0; i < size_file; i++) {
+        root = insert(root, str[i]);
+    }
 
-    inorder(root, nill);
 
+
+    int choice = 0;
+
+
+    while (choice != 3) {
+        char* string=(char *)malloc(sizeof(char*)) ;
+
+        printf("\nThe size of the dixtionary is %d\n", RBT_size);
+        printf("The height of the RBT after insertion is  %d\n\n", maxDepth(root));
+        printf("Choose from the following\n");
+        printf("(1) Insert\n");
+        printf("(2) Search\n");
+        printf("(3) Terminate\n");
+        scanf("%d", &choice);
+
+
+        switch (choice) {
+
+            case 1:
+                printf("Enter the word\n");
+                scanf("%s", string);
+                root = insert(root, string);
+                string = NULL;
+                choice = 0;
+                break;
+
+            case 2:
+                printf("Enter the word\n");
+                scanf("%s", string);
+                search(root, string);
+                string = NULL;
+                choice = 0;
+                break;
+
+            case 3:
+                choice = 3;
+                break;
+
+            default:
+                printf("Wrong input!\n");
+                choice = 3;
+                break;
+        }
+        printf("_______________________________________________");
+    }
 
     return 0;
 }
