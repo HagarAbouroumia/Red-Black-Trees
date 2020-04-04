@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include <string.h>
 
 struct node *root, *nill, *helper;
 #define red          1
@@ -10,15 +11,12 @@ struct node *root, *nill, *helper;
 #define rightLeft    7
 #define leftRight    8
 struct node {
-    int key;
+    char *key;
     int color;
     struct node *left, *right, *parent;
 };
-int check = 0;
 
-void inorder(struct node *root, struct node *nill);
-
-struct node *insert(struct node *node, int key);
+int RBT_size=0;
 
 int casesCheck(struct node *node, struct node *nill);
 
@@ -30,8 +28,9 @@ void leftRotation(struct node *node);
 
 void rightRotation(struct node *node);
 
-struct node *newNode(int key, struct node *node, int color, struct node *pa) {
+struct node *newNode(char *key, struct node *node, int color, struct node *pa) {
     if (node == nill) {
+        RBT_size++;
         struct node *temp = (struct node *) malloc(sizeof(struct node));
         temp->key = key;
         temp->left = temp->right = nill;
@@ -40,31 +39,11 @@ struct node *newNode(int key, struct node *node, int color, struct node *pa) {
         helper = temp;
         return temp;
     } else {
-        if (key < node->key) {
+        if (strcmp(key, node->key) < 0) {
             node->left = newNode(key, node->left, red, node);
-        } else if (key > node->key) {
+        } else if (strcmp(key, node->key) > 0) {
             node->right = newNode(key, node->right, red, node);
         }
-    }
-}
-
-void inorder(struct node *root, struct node *nill) {
-    if (root != nill) {
-        inorder(root->left, nill);
-        printf("parent is %d and left child is %d right child is %d and color is %d\n", root->key, root->left->key, root->right->key,root->color);
-        inorder(root->right, nill);
-    }
-}
-
-struct node *insert(struct node *node, int key) {
-    struct node *temp;
-    temp = newNode(key, node, black, nill);
-    if (node == nill) {
-        root = temp;
-        return root;
-    } else {
-        red_black_insert_fixup(helper);
-        return root;
     }
 }
 
@@ -86,25 +65,19 @@ int casesCheck(struct node *node, struct node *nill) {
             struct node *grandpa = node->parent->parent, *pa = node->parent;
             if (grandpa->left == node->parent) // opp
             {
-                if(grandpa->right->color == red)
-                {
+                if (grandpa->right->color == red) {
                     return redUncle;
-                } else
-                {
+                } else {
                     if (grandpa->left->left == node)
                         return leftLeft;
                     else
                         return leftRight;
                 }
-            } else
-            {
-                if (grandpa->right == node->parent)
-                {
-                    if (grandpa->left->color == red)
-                    {
+            } else {
+                if (grandpa->right == node->parent) {
+                    if (grandpa->left->color == red) {
                         return redUncle;
-                    } else
-                    {
+                    } else {
                         if (grandpa->right->right == node)
                             return rightRight;
                         else
@@ -130,8 +103,7 @@ void red_black_insert_fixup(struct node *node) {
             }
             if (grandpa->parent == nill) {
                 grandpa->color = black;
-            }
-            else {
+            } else {
                 red_black_insert_fixup(grandpa);
             }
             break;
@@ -155,7 +127,7 @@ void red_black_insert_fixup(struct node *node) {
         case rightLeft: {
             pa->left = node;
             rightRotation(pa);
-           red_black_insert_fixup(pa);
+            red_black_insert_fixup(pa);
             break;
         }
         case leftRight: {
@@ -217,5 +189,6 @@ void rightRotation(struct node *node) {
     node->right->left = temp4;
     node->right->left->parent = node->right;
     if (node->parent == nill)
-    root = node;
+        root = node;
 }
+
